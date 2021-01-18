@@ -39,8 +39,21 @@ class Ball {
     changeYDirection = () => this.yDirection = -this.yDirection;
 
     updatePosition = () => {
-        if (this.x >= this.endX || this.x <= this.startX) this.changeXDirection();
-        if (this.y >= this.endY || this.y <= this.startY) this.changeYDirection();
+        if (this.x >= this.endX) {
+            this.changeXDirection();
+            this.x = this.endX;
+        } else if (this.x <= this.startX) {
+            this.changeXDirection();
+            this.x = this.startX;
+        }
+        
+        if (this.y >= this.endY) {
+            this.changeYDirection();
+            this.y = this.endY;
+        } else if (this.y <= this.startY) {
+            this.changeYDirection();
+            this.y = this.startY;
+        }
 
         this.x += this.speed * this.xDirection;
         this.y += this.speed * this.yDirection;
