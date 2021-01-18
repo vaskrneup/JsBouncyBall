@@ -1,13 +1,13 @@
-import {random} from './utils.js';
+import {random, calculateDistanceBetweenBalls} from './utils.js';
 
-const CANVAS_WIDTH = 700;
-const CANVAS_HEIGHT = 500;
+const CANVAS_WIDTH = 1900;
+const CANVAS_HEIGHT = 980;
 
 class Ball {
     constructor(x, y, radius, color, speed) {
-        this.radius = radius || random.randInt(20, 30);
+        this.radius = radius || random.randInt(5, 15);
         this.color = color || random.getRandomHexColor();
-        this.speed = speed || random.randRange(1, 3, 2);
+        this.speed = speed || random.randInt(1, 2);
 
         this.startX = this.radius;
         this.endX = CANVAS_WIDTH - this.radius;
@@ -21,14 +21,10 @@ class Ball {
         this.yDirection = Math.random() > 0.5 ? -1 : 1;
     }
 
-    calculateDistance = (ball1, ball2) => {
-        return (((ball2.x - ball1.x) ** 2) + ((ball2.y - ball1.y) ** 2)) ** 0.5
-    }
-
     changeDirectionOnCollision = (balls) => {
         balls.forEach(ball => {
             if (ball !== this) {
-                const distanceBetweenBalls = this.calculateDistance(this, ball);
+                const distanceBetweenBalls = calculateDistanceBetweenBalls(this, ball);
 
                 if ((this.radius + ball.radius) >= distanceBetweenBalls) {
                     this.changeXDirection();
@@ -40,9 +36,9 @@ class Ball {
         });
     }
 
-    changeXDirection = () => this.xDirection = this.xDirection === 1 ? -1 : 1;
+    changeXDirection = () => this.xDirection = -this.xDirection;
 
-    changeYDirection = () => this.yDirection = this.yDirection === 1 ? -1 : 1;
+    changeYDirection = () => this.yDirection = -this.yDirection;
 
     updatePosition = () => {
         if (this.x >= this.endX || this.x <= this.startX) this.changeXDirection();
@@ -67,11 +63,6 @@ class Canvas {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    addStyles = () => {
-        this.canvas.style.width = this.width + 'px';
-        this.canvas.style.height = this.height + 'px';
-    }
-
     renderBall = (ball) => {
         ball.updatePosition();
 
@@ -94,10 +85,6 @@ class Canvas {
 
         requestAnimationFrame(() => this.render(balls));
     }
-
-    run = () => {
-        this.addStyles();
-    }
 }
 
 
@@ -106,13 +93,22 @@ function main(numberOfBalls) {
     const balls = [];
 
     for (let i = 0; i < numberOfBalls; i++) {
-        balls.push(new Ball());
+        let ball = new Ball();
+
+        if (i !== 0) {
+            for (let j = 0; j < balls.length; j++) {
+                if ((balls[j].radius + ball.radius) >= calculateDistanceBetweenBalls(balls[j], ball)) {
+                    ball = new Ball();
+                    j = -1;
+                }
+            }
+        }
+
+        balls.push(ball);
     }
 
     canvas.render(balls);
-
-    canvas.run();
 }
 
 
-main(10);
+main(1000);
