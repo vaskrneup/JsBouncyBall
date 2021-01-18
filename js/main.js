@@ -7,11 +7,12 @@ import {
     BALL_MIN_SPEED,
     CANVAS_HEIGHT,
     CANVAS_WIDTH
-} from "./constants";
+} from "./constants.js";
 
 
 class Ball {
     /**
+     * Represents a ball, that can be used in canvas.
      * DEFAULT variables are defined at ./constants.js
      *
      * @param {Number} [x]        X position of the ball, if not provided random value will be chosen.
@@ -37,6 +38,11 @@ class Ball {
         this.yDirection = Math.random() > 0.5 ? -1 : 1;
     }
 
+    /**
+     * Changes direction of balls on collision.
+     *
+     * @param {Ball[]} balls      Array
+     * */
     changeDirectionOnCollision = (balls) => {
         balls.forEach(ball => {
             if (ball !== this) {
@@ -54,10 +60,19 @@ class Ball {
         });
     }
 
+    /**
+     * Changes ball's X direction.
+     * */
     changeXDirection = () => this.xDirection = -this.xDirection;
 
+    /**
+     * Changes ball's Y direction.
+     * */
     changeYDirection = () => this.yDirection = -this.yDirection;
 
+    /**
+     * Updates ball position, using speed and direction && Frees the balls that is stuck at the end of window.
+     * */
     updatePosition = () => {
         if (this.x >= this.endX) {
             this.changeXDirection();
@@ -82,18 +97,32 @@ class Ball {
 
 
 class Canvas {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
+    /**
+     * Object for easily maintaining the canvas.
+     *
+     * @param {String} canvasId         Id of the canvas.
+     * */
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
 
         this.canvas.width = CANVAS_WIDTH;
         this.canvas.height = CANVAS_HEIGHT;
     }
 
+    /**
+     * Clears the canvas.
+     *
+     */
     clearCanvas = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    /**
+     * Simply renders the ball using ball's data.
+     *
+     * @param {Ball} ball       Ball object to render.
+     */
     renderBall = (ball) => {
         ball.updatePosition();
 
@@ -106,6 +135,11 @@ class Canvas {
         this.ctx.closePath();
     }
 
+    /**
+     * Renders any object provided to the canvas.
+     *
+     * @param {Ball[]} balls      Balls to render.
+     */
     render = (balls) => {
         this.clearCanvas();
 
@@ -119,8 +153,11 @@ class Canvas {
 }
 
 
+/**
+ * Creates non overlapping ball objects.
+ * */
 function main(numberOfBalls = BALL_COUNT) {
-    const canvas = new Canvas(document.getElementById('canvas'));
+    const canvas = new Canvas("canvas");
     const balls = [];
 
     for (let i = 0; i < numberOfBalls; i++) {

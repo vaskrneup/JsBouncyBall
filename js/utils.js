@@ -1,17 +1,39 @@
+/**
+ * Calculates distance between two balls using distance formula.
+ *
+ * @param {Ball} ball1              First ball.
+ * @param {Ball} ball2              Second ball.
+ * */
 export const calculateDistanceBetweenBalls = (ball1, ball2) => {
     return (((ball2.x - ball1.x) ** 2) + ((ball2.y - ball1.y) ** 2)) ** 0.5
 }
 
 class Random {
+    /**
+     * Generates random `Number` in given range, and rounds the number to given digits if roundNumber is given else, returns non rounded number.
+     *
+     * @param {Number} min                  Minimum value random number.
+     * @param {Number} max                  Maximum value random number.
+     * @param {Number} [roundNumber]        Number of digits to round from random number.
+     * */
     randRange = (min, max, roundNumber) => {
         const randomNumber = Math.random() * (max - min) + min;
         return roundNumber ? randomNumber.toFixed(roundNumber) : randomNumber;
     }
 
+    /**
+     * Generates random `Integer` in given range.
+     *
+     * @param {Number} min                  Minimum value random number.
+     * @param {Number} max                  Maximum value random number.
+     * */
     randInt = (min, max) => {
         return parseInt(this.randRange(min, max));
     }
 
+    /**
+     * Generates random `Hex color value`.
+     * */
     getRandomHexColor = () => {
         return "#" + Math.floor(Math.random() * 16777215).toString(16);
     }
