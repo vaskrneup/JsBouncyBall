@@ -1,11 +1,11 @@
 import {random} from './utils.js';
 
-const CANVAS_WIDTH = 1900;
-const CANVAS_HEIGHT = 980;
+const CANVAS_WIDTH = 700;
+const CANVAS_HEIGHT = 500;
 
 class Ball {
     constructor(x, y, radius, color, speed) {
-        this.radius = radius || random.randInt(1, 10);
+        this.radius = radius || random.randInt(20, 30);
         this.color = color || random.getRandomHexColor();
         this.speed = speed || random.randRange(1, 3, 2);
 
@@ -30,7 +30,7 @@ class Ball {
             if (ball !== this) {
                 const distanceBetweenBalls = this.calculateDistance(this, ball);
 
-                if ((this.radius + ball.radius) <= distanceBetweenBalls) {
+                if ((this.radius + ball.radius) >= distanceBetweenBalls) {
                     this.changeXDirection();
                     this.changeYDirection();
                     ball.changeXDirection();
@@ -101,11 +101,11 @@ class Canvas {
 }
 
 
-function main() {
+function main(numberOfBalls) {
     const canvas = new Canvas(document.getElementById('canvas'));
     const balls = [];
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < numberOfBalls; i++) {
         balls.push(new Ball());
     }
 
@@ -115,4 +115,4 @@ function main() {
 }
 
 
-main();
+main(10);
