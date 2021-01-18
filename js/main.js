@@ -50,13 +50,14 @@ class Ball {
             if (ball !== this) {
                 const distanceBetweenBalls = calculateDistanceBetweenBalls(this, ball);
                 const sumOfBallRadius = this.radius + ball.radius;
+                const ballTouchPosition = sumOfBallRadius - distanceBetweenBalls;
 
-                if ((this.radius + ball.radius) >= distanceBetweenBalls) {
+                if (sumOfBallRadius >= distanceBetweenBalls) {
                     this.changeXDirection();
                     this.changeYDirection();
 
-                    this.x += (sumOfBallRadius - distanceBetweenBalls) * this.xDirection;
-                    this.y += (sumOfBallRadius - distanceBetweenBalls) * this.yDirection;
+                    this.x += ballTouchPosition * this.xDirection;
+                    this.y += ballTouchPosition * this.yDirection;
                 }
             }
         });
@@ -95,6 +96,18 @@ class Ball {
         this.x += this.speed * this.xDirection;
         this.y += this.speed * this.yDirection;
     }
+
+    render = (ctx) => {
+        this.updatePosition();
+
+        ctx.beginPath();
+
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.closePath();
+    }
 }
 
 
@@ -121,23 +134,6 @@ class Canvas {
     }
 
     /**
-     * Simply renders the ball using ball's data.
-     *
-     * @param {Ball} ball       Ball object to render.
-     */
-    renderBall = (ball) => {
-        ball.updatePosition();
-
-        this.ctx.beginPath();
-
-        this.ctx.fillStyle = ball.color;
-        this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        this.ctx.closePath();
-    }
-
-    /**
      * Renders any object provided to the canvas.
      *
      * @param {Ball[]} balls      Balls to render.
@@ -146,7 +142,7 @@ class Canvas {
         this.clearCanvas();
 
         balls.forEach(ball => {
-            this.renderBall(ball);
+            ball.render(this.ctx);
             ball.changeDirectionOnCollision(balls)
         })
 

@@ -8,4 +8,4 @@ export const BALL_MAX_RADIUS = 9;
 export const BALL_MIN_SPEED = 1;
 export const BALL_MAX_SPEED = 5;
 
-export const BALL_COUNT = 500;
+export const BALL_COUNT = 1000;
