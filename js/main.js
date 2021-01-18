@@ -1,13 +1,29 @@
 import {random, calculateDistanceBetweenBalls} from './utils.js';
+import {
+    BALL_COUNT,
+    BALL_MAX_RADIUS,
+    BALL_MAX_SPEED,
+    BALL_MIN_RADIUS,
+    BALL_MIN_SPEED,
+    CANVAS_HEIGHT,
+    CANVAS_WIDTH
+} from "./constants";
 
-const CANVAS_WIDTH = 1900;
-const CANVAS_HEIGHT = 980;
 
 class Ball {
+    /**
+     * DEFAULT variables are defined at ./constants.js
+     *
+     * @param {Number} [x]        X position of the ball, if not provided random value will be chosen.
+     * @param {Number} [y]        Y position of the ball, if not provided random value will be chosen.
+     * @param {Number} [radius]   Radius of the ball, if not provided random value will be chosen.
+     * @param {String} [color]    Color of the ball, if not provided random value will be chosen.
+     * @param {Number} [speed]    Speed of the ball, if not provided random value will be chosen.
+     */
     constructor(x, y, radius, color, speed) {
-        this.radius = radius || random.randInt(3, 9);
+        this.radius = radius || random.randInt(BALL_MIN_RADIUS, BALL_MAX_RADIUS);
         this.color = color || random.getRandomHexColor();
-        this.speed = speed || random.randInt(1, 4);
+        this.speed = speed || random.randInt(BALL_MIN_SPEED, BALL_MAX_SPEED);
 
         this.startX = this.radius;
         this.endX = CANVAS_WIDTH - this.radius;
@@ -103,7 +119,7 @@ class Canvas {
 }
 
 
-function main(numberOfBalls) {
+function main(numberOfBalls = BALL_COUNT) {
     const canvas = new Canvas(document.getElementById('canvas'));
     const balls = [];
 
@@ -126,4 +142,4 @@ function main(numberOfBalls) {
 }
 
 
-main(500);
+main(1000);
