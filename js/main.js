@@ -37,7 +37,7 @@ class Ball {
                     ball.changeYDirection();
                 }
             }
-        })
+        });
     }
 
     changeXDirection = () => this.xDirection = this.xDirection === 1 ? -1 : 1;
