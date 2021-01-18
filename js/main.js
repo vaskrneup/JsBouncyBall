@@ -15,13 +15,15 @@ class Ball {
      * Represents a ball, that can be used in canvas.
      * DEFAULT variables are defined at ./constants.js
      *
-     * @param {Number} [x]        X position of the ball, if not provided random value will be chosen.
-     * @param {Number} [y]        Y position of the ball, if not provided random value will be chosen.
-     * @param {Number} [radius]   Radius of the ball, if not provided random value will be chosen.
-     * @param {String} [color]    Color of the ball, if not provided random value will be chosen.
-     * @param {Number} [speed]    Speed of the ball, if not provided random value will be chosen.
+     * @param {Number} [x]                  X position of the ball, if not provided random value will be chosen.
+     * @param {Number} [y]                  Y position of the ball, if not provided random value will be chosen.
+     * @param {Number} [radius]             Radius of the ball, if not provided random value will be chosen.
+     * @param {String} [color]              Color of the ball, if not provided random value will be chosen.
+     * @param {Number} [speed]              Speed of the ball, if not provided random value will be chosen.
+     * @param {Number} [xDirection=-1|1]    Starting direction of ball in x axis, if not provided random value will be chosen.
+     * @param {Number} [yDirection=-1|1]    Starting direction of ball in y axis, if not provided random value will be chosen.
      */
-    constructor(x, y, radius, color, speed) {
+    constructor(x, y, radius, color, speed, xDirection, yDirection) {
         this.radius = radius || random.randInt(BALL_MIN_RADIUS, BALL_MAX_RADIUS);
         this.color = color || random.getRandomHexColor();
         this.speed = speed || random.randInt(BALL_MIN_SPEED, BALL_MAX_SPEED);
@@ -34,8 +36,8 @@ class Ball {
         this.x = x || random.randInt(this.startX, this.endX);
         this.y = y || random.randInt(this.startY, this.endY);
 
-        this.xDirection = Math.random() > 0.5 ? -1 : 1;
-        this.yDirection = Math.random() > 0.5 ? -1 : 1;
+        this.xDirection = xDirection || Math.random() > 0.5 ? -1 : 1;
+        this.yDirection = yDirection || Math.random() > 0.5 ? -1 : 1;
     }
 
     /**
@@ -155,18 +157,32 @@ class Canvas {
 
 /**
  * Creates non overlapping ball objects.
+ *
+ * @param {Number} numberOfBalls        Number of balls to generate and render.
+ * @param {Number} [radius]             Radius of the ball, if not provided random value will be chosen.
+ * @param {String} [color]              Color of the ball, if not provided random value will be chosen.
+ * @param {Number} [speed]              Speed of the ball, if not provided random value will be chosen.
+ * @param {Number} [xDirection=-1|1]    Starting direction of ball in x axis, if not provided random value will be chosen.
+ * @param {Number} [yDirection=-1|1]    Starting direction of ball in y axis, if not provided random value will be chosen.
  * */
-function main(numberOfBalls = BALL_COUNT) {
+function createAndRenderBalls(
+    numberOfBalls = BALL_COUNT,
+    radius,
+    color,
+    speed,
+    xDirection,
+    yDirection
+) {
     const canvas = new Canvas("canvas");
     const balls = [];
 
     for (let i = 0; i < numberOfBalls; i++) {
-        let ball = new Ball();
+        let ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
 
         if (i !== 0) {
             for (let j = 0; j < balls.length; j++) {
                 if ((balls[j].radius + ball.radius) >= calculateDistanceBetweenBalls(balls[j], ball)) {
-                    ball = new Ball();
+                    ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
                     j = -1;
                 }
             }
@@ -179,4 +195,4 @@ function main(numberOfBalls = BALL_COUNT) {
 }
 
 
-main(1000);
+createAndRenderBalls();
