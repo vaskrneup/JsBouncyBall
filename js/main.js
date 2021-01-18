@@ -25,10 +25,14 @@ class Ball {
         balls.forEach(ball => {
             if (ball !== this) {
                 const distanceBetweenBalls = calculateDistanceBetweenBalls(this, ball);
+                const sumOfBallRadius = this.radius + ball.radius;
 
                 if ((this.radius + ball.radius) >= distanceBetweenBalls) {
                     this.changeXDirection();
                     this.changeYDirection();
+
+                    this.x += (sumOfBallRadius - distanceBetweenBalls) * this.xDirection;
+                    this.y += (sumOfBallRadius - distanceBetweenBalls) * this.yDirection;
                 }
             }
         });
@@ -46,7 +50,7 @@ class Ball {
             this.changeXDirection();
             this.x = this.startX;
         }
-        
+
         if (this.y >= this.endY) {
             this.changeYDirection();
             this.y = this.endY;
