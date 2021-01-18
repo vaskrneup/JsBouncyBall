@@ -5,9 +5,9 @@ const CANVAS_HEIGHT = 980;
 
 class Ball {
     constructor(x, y, radius, color, speed) {
-        this.radius = radius || random.randInt(5, 15);
+        this.radius = radius || random.randInt(3, 9);
         this.color = color || random.getRandomHexColor();
-        this.speed = speed || random.randInt(1, 2);
+        this.speed = speed || random.randInt(1, 4);
 
         this.startX = this.radius;
         this.endX = CANVAS_WIDTH - this.radius;
@@ -29,8 +29,6 @@ class Ball {
                 if ((this.radius + ball.radius) >= distanceBetweenBalls) {
                     this.changeXDirection();
                     this.changeYDirection();
-                    ball.changeXDirection();
-                    ball.changeYDirection();
                 }
             }
         });
@@ -111,4 +109,4 @@ function main(numberOfBalls) {
 }
 
 
-main(1000);
+main(500);
