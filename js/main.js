@@ -1,13 +1,13 @@
 import {random} from './utils.js';
 
-const CANVAS_WIDTH = 900;
-const CANVAS_HEIGHT = 900;
+const CANVAS_WIDTH = 1900;
+const CANVAS_HEIGHT = 980;
 
 class Ball {
     constructor(x, y, radius, color, speed) {
-        this.radius = radius || random.randInt(10, 20);
+        this.radius = radius || random.randInt(1, 10);
         this.color = color || random.getRandomHexColor();
-        this.speed = speed || random.randRange(0, 1, 2);
+        this.speed = speed || random.randRange(1, 3, 2);
 
         this.startX = this.radius;
         this.endX = CANVAS_WIDTH - this.radius;
@@ -17,8 +17,27 @@ class Ball {
         this.x = x || random.randInt(this.startX, this.endX);
         this.y = y || random.randInt(this.startY, this.endY);
 
-        this.xDirection = 1;
-        this.yDirection = 1;
+        this.xDirection = Math.random() > 0.5 ? -1 : 1;
+        this.yDirection = Math.random() > 0.5 ? -1 : 1;
+    }
+
+    calculateDistance = (ball1, ball2) => {
+        return (((ball2.x - ball1.x) ** 2) + ((ball2.y - ball1.y) ** 2)) ** 0.5
+    }
+
+    changeDirectionOnCollision = (balls) => {
+        balls.forEach(ball => {
+            if (ball !== this) {
+                const distanceBetweenBalls = this.calculateDistance(this, ball);
+
+                if ((this.radius + ball.radius) <= distanceBetweenBalls) {
+                    this.changeXDirection();
+                    this.changeYDirection();
+                    ball.changeXDirection();
+                    ball.changeYDirection();
+                }
+            }
+        })
     }
 
     changeXDirection = () => this.xDirection = this.xDirection === 1 ? -1 : 1;
@@ -70,6 +89,7 @@ class Canvas {
 
         balls.forEach(ball => {
             this.renderBall(ball);
+            ball.changeDirectionOnCollision(balls)
         })
 
         requestAnimationFrame(() => this.render(balls));
@@ -85,7 +105,7 @@ function main() {
     const canvas = new Canvas(document.getElementById('canvas'));
     const balls = [];
 
-    for (let i = 0; i < 3000; i++) {
+    for (let i = 0; i < 1000; i++) {
         balls.push(new Ball());
     }
 
