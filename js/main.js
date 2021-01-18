@@ -21,20 +21,13 @@ class Ball {
         this.yDirection = 1;
     }
 
-    changeXDirection = () => {
-        this.xDirection = this.xDirection === 1 ? -1 : 1;
-    }
+    changeXDirection = () => this.xDirection = this.xDirection === 1 ? -1 : 1;
 
-    changeYDirection = () => {
-        this.yDirection = this.yDirection === 1 ? -1 : 1;
-    }
+    changeYDirection = () => this.yDirection = this.yDirection === 1 ? -1 : 1;
 
     updatePosition = () => {
-        if (this.x >= this.endX) this.changeXDirection();
-        else if (this.x <= this.startX) this.changeXDirection();
-
-        if (this.y >= this.endY) this.changeYDirection();
-        else if (this.y <= this.startY) this.changeYDirection();
+        if (this.x >= this.endX || this.x <= this.startX) this.changeXDirection();
+        if (this.y >= this.endY || this.y <= this.startY) this.changeYDirection();
 
         this.x += this.speed * this.xDirection;
         this.y += this.speed * this.yDirection;
@@ -60,18 +53,23 @@ class Canvas {
         this.canvas.style.height = this.height + 'px';
     }
 
+    renderBall = (ball) => {
+        ball.updatePosition();
+
+        this.ctx.beginPath();
+
+        this.ctx.fillStyle = ball.color;
+        this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.closePath();
+    }
+
     render = (balls) => {
         this.clearCanvas();
 
         balls.forEach(ball => {
-            ball.updatePosition();
-            this.ctx.beginPath();
-
-            this.ctx.fillStyle = ball.color;
-            this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-
-            this.ctx.closePath();
+            this.renderBall(ball);
         })
 
         requestAnimationFrame(() => this.render(balls));
@@ -82,14 +80,19 @@ class Canvas {
     }
 }
 
-const canvas = new Canvas(document.getElementById('canvas'));
-const balls = [];
 
-for (let i = 0; i < 3000; i++) {
-    balls.push(new Ball());
+function main() {
+    const canvas = new Canvas(document.getElementById('canvas'));
+    const balls = [];
+
+    for (let i = 0; i < 3000; i++) {
+        balls.push(new Ball());
+    }
+
+    canvas.render(balls);
+
+    canvas.run();
 }
 
-canvas.render(balls);
 
-
-canvas.run();
+main();
