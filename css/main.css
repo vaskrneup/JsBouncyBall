@@ -9,3 +9,7 @@ a {
     text-decoration: none;
     font-weight: bold;
 }
+
+a:hover {
+    background-color: #727272;
+}
