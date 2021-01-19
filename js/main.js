@@ -1,5 +1,6 @@
 import {random, calculateDistanceBetweenBalls} from './utils.js';
 import {
+    ANT_IMAGE,
     ANT_MAX_HEIGHT,
     ANT_MAX_SPEED, ANT_MAX_WIDTH, ANT_MIN_HEIGHT,
     ANT_MIN_SPEED, ANT_MIN_WIDTH,
@@ -141,25 +142,54 @@ class Ant {
         this.x = x || random.randInt(this.startX, this.endX);
         this.y = y || random.randInt(this.startY, this.endY);
 
-        this.image = new Image();
-        this.image.src = 'assets/images/ants/ant_2.gif';
+        this.image = image || ANT_IMAGE;
 
         this.xDirection = xDirection || Math.random() > 0.5 ? -1 : 1;
         this.yDirection = yDirection || Math.random() > 0.5 ? -1 : 1;
     }
 
     updatePosition = () => {
+        if (this.x >= this.endX) {
+            this.changeXDirection();
+            this.x = this.endX;
+        } else if (this.x <= this.startX) {
+            this.changeXDirection();
+            this.x = this.startX;
+        }
 
+        if (this.y >= this.endY) {
+            this.changeYDirection();
+            this.y = this.endY;
+        } else if (this.y <= this.startY) {
+            this.changeYDirection();
+            this.y = this.startY;
+        }
+
+        this.x += this.speed * this.xDirection;
+        this.y += this.speed * this.yDirection;
     }
 
     changeDirectionOnCollision = (ants) => {
+
     }
 
+    /**
+     * Changes ball's X direction.
+     * */
+    changeXDirection = () => this.xDirection = -this.xDirection;
+
+    /**
+     * Changes ball's Y direction.
+     * */
+    changeYDirection = () => this.yDirection = -this.yDirection;
+
     render = (ctx) => {
+        this.updatePosition();
+
         ctx.beginPath();
-        this.image.addEventListener('load', () => {
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
-        });
+
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+
         ctx.closePath();
     }
 }
@@ -169,14 +199,36 @@ class Canvas {
     /**
      * Object for easily maintaining the canvas.
      *
-     * @param {String} canvasId         Id of the canvas.
+     * @param {String} canvasId                 Id of the canvas.
+     * @param {boolean} removeObjectOnclick     Removes the object from canvas when clicked !!
      * */
-    constructor(canvasId) {
+    constructor(canvasId, removeObjectOnclick = true) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
 
         this.canvas.width = CANVAS_WIDTH;
         this.canvas.height = CANVAS_HEIGHT;
+
+        this.renderedObjects = null;
+
+        this.removeObjectOnclick = removeObjectOnclick;
+
+        this.addEventListeners();
+    }
+
+    addEventListeners = () => {
+        if (this.removeObjectOnclick) {
+            this.canvas.addEventListener("click", (e) => {
+                if (this.renderedObjects) {
+                    this.renderedObjects.forEach((obj, i) => {
+                        // FOr now only for ants !!
+                        if ((e.clientX >= obj.x && e.clientX <= obj.x + obj.width) && (e.clientY >= obj.y && e.clientY <= obj.y + obj.height)) {
+                            this.renderedObjects.splice(i, 1)
+                        }
+                    });
+                }
+            })
+        }
     }
 
     /**
@@ -193,6 +245,8 @@ class Canvas {
      * @param objects      Balls to render.
      */
     render = (objects) => {
+        this.renderedObjects = objects;
+
         this.clearCanvas();
 
         objects.forEach(object => {
@@ -200,7 +254,7 @@ class Canvas {
             object.changeDirectionOnCollision(object)
         })
 
-        // requestAnimationFrame(() => this.render(objects));
+        requestAnimationFrame(() => this.render(objects));
     }
 }
 
@@ -245,4 +299,4 @@ function createAndRenderBalls(
 }
 
 
-createAndRenderBalls(5);
+createAndRenderBalls(50);
