@@ -1,5 +1,6 @@
 import {random, calculateDistanceBetweenBalls} from './utils.js';
 import {
+    ANT_COUNT,
     ANT_IMAGE,
     ANT_MAX_HEIGHT,
     ANT_MAX_SPEED, ANT_MAX_WIDTH, ANT_MIN_HEIGHT,
@@ -194,8 +195,9 @@ class Canvas {
      * @param {String} canvasId                 Id of the canvas.
      * @param {boolean} removeObjectOnclick     Removes the object from canvas when clicked !!
      * */
-    constructor(canvasId, removeObjectOnclick = true) {
+    constructor(canvasId, removeObjectOnclick = false) {
         this.canvas = document.getElementById(canvasId);
+        console.log(this.canvas)
         this.ctx = this.canvas.getContext('2d');
 
         this.canvas.width = CANVAS_WIDTH;
@@ -286,9 +288,32 @@ function createAndRenderBalls(
 
         balls.push(ball);
     }
+    balls.push(new Ball(null, null, 50))
 
     canvas.render(balls);
 }
 
 
+function createAndRenderAnts(
+    numberOfAnts = ANT_COUNT,
+    speed,
+    width,
+    height,
+    xDirection,
+    yDirection,
+    image
+) {
+    const antCanvas = new Canvas("ant-canvas", true);
+    const ants = [];
+
+    for (let i = 0; i < numberOfAnts; i++) {
+        let ant = new Ant(null, null, speed, width, height, xDirection, yDirection, image);
+        ants.push(ant);
+    }
+
+    antCanvas.render(ants);
+}
+
+
 createAndRenderBalls(1000);
+// createAndRenderAnts(50);
