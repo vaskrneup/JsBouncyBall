@@ -1,5 +1,5 @@
-export const CANVAS_WIDTH = 1900;
-export const CANVAS_HEIGHT = 980;
+export const CANVAS_WIDTH = 1800;
+export const CANVAS_HEIGHT = 950;
 export const CANVAS_RESIZE_ON_SCREEN_SIZE_CHANGE = false;
 
 export const BALL_MIN_RADIUS = 3;

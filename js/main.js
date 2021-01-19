@@ -197,7 +197,6 @@ class Canvas {
      * */
     constructor(canvasId, removeObjectOnclick = false) {
         this.canvas = document.getElementById(canvasId);
-        console.log(this.canvas)
         this.ctx = this.canvas.getContext('2d');
 
         this.canvas.width = CANVAS_WIDTH;
@@ -271,26 +270,28 @@ function createAndRenderBalls(
     xDirection,
     yDirection
 ) {
-    const canvas = new Canvas("canvas");
-    const balls = [];
+    if (document.getElementById("canvas")) {
+        const canvas = new Canvas("canvas");
 
-    for (let i = 0; i < numberOfBalls; i++) {
-        let ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
+        const balls = [];
 
-        if (i !== 0) {
-            for (let j = 0; j < balls.length; j++) {
-                if ((balls[j].radius + ball.radius) >= calculateDistanceBetweenBalls(balls[j], ball)) {
-                    ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
-                    j = -1;
+        for (let i = 0; i < numberOfBalls; i++) {
+            let ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
+
+            if (i !== 0) {
+                for (let j = 0; j < balls.length; j++) {
+                    if ((balls[j].radius + ball.radius) >= calculateDistanceBetweenBalls(balls[j], ball)) {
+                        ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
+                        j = -1;
+                    }
                 }
             }
+
+            balls.push(ball);
         }
 
-        balls.push(ball);
+        canvas.render(balls);
     }
-    balls.push(new Ball(null, null, 50))
-
-    canvas.render(balls);
 }
 
 
@@ -303,17 +304,20 @@ function createAndRenderAnts(
     yDirection,
     image
 ) {
-    const antCanvas = new Canvas("ant-canvas", true);
-    const ants = [];
+    if (document.getElementById("ant-canvas")) {
+        const antCanvas = new Canvas("ant-canvas", true);
 
-    for (let i = 0; i < numberOfAnts; i++) {
-        let ant = new Ant(null, null, speed, width, height, xDirection, yDirection, image);
-        ants.push(ant);
+        const ants = [];
+
+        for (let i = 0; i < numberOfAnts; i++) {
+            let ant = new Ant(null, null, speed, width, height, xDirection, yDirection, image);
+            ants.push(ant);
+        }
+
+        antCanvas.render(ants);
     }
-
-    antCanvas.render(ants);
 }
 
 
 createAndRenderBalls(1000);
-// createAndRenderAnts(50);
+createAndRenderAnts(50);
