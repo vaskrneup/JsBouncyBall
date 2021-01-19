@@ -1,5 +1,8 @@
 import {random, calculateDistanceBetweenBalls} from './utils.js';
 import {
+    ANT_MAX_HEIGHT,
+    ANT_MAX_SPEED, ANT_MAX_WIDTH, ANT_MIN_HEIGHT,
+    ANT_MIN_SPEED, ANT_MIN_WIDTH,
     BALL_COUNT,
     BALL_MAX_RADIUS,
     BALL_MAX_SPEED,
@@ -111,6 +114,57 @@ class Ball {
 }
 
 
+/**
+ * Represents an ant, that can be used in canvas.
+ * DEFAULT variables are defined at ./constants.js
+ *
+ * @param {Number} [x]                  X position of the ant, if not provided random value will be chosen.
+ * @param {Number} [y]                  Y position of the ant, if not provided random value will be chosen.
+ * @param {Number} [speed]              Speed of the ant, if not provided random value will be chosen.
+ * @param {Number} [xDirection=-1|1]    Starting direction of ant in x axis, if not provided random value will be chosen.
+ * @param {Number} [yDirection=-1|1]    Starting direction of ant in y axis, if not provided random value will be chosen.
+ * @param {String} [image]              Image of the ant, if not provided random image will be chosen.
+ */
+class Ant {
+    constructor(x, y, speed, width, height, xDirection, yDirection, image) {
+        this.speed = speed || random.randInt(ANT_MIN_SPEED, ANT_MAX_SPEED);
+
+        this.width = width || random.randInt(ANT_MIN_WIDTH, ANT_MAX_WIDTH);
+        this.height = height || random.randInt(ANT_MIN_HEIGHT, ANT_MAX_HEIGHT);
+
+        this.startX = 0;
+        this.endX = CANVAS_WIDTH - this.width;
+
+        this.startY = 0;
+        this.endY = CANVAS_HEIGHT - this.height;
+
+        this.x = x || random.randInt(this.startX, this.endX);
+        this.y = y || random.randInt(this.startY, this.endY);
+
+        this.image = new Image();
+        this.image.src = 'assets/images/ants/ant_2.gif';
+
+        this.xDirection = xDirection || Math.random() > 0.5 ? -1 : 1;
+        this.yDirection = yDirection || Math.random() > 0.5 ? -1 : 1;
+    }
+
+    updatePosition = () => {
+
+    }
+
+    changeDirectionOnCollision = (ants) => {
+    }
+
+    render = (ctx) => {
+        ctx.beginPath();
+        this.image.addEventListener('load', () => {
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+        });
+        ctx.closePath();
+    }
+}
+
+
 class Canvas {
     /**
      * Object for easily maintaining the canvas.
@@ -136,17 +190,17 @@ class Canvas {
     /**
      * Renders any object provided to the canvas.
      *
-     * @param {Ball[]} balls      Balls to render.
+     * @param objects      Balls to render.
      */
-    render = (balls) => {
+    render = (objects) => {
         this.clearCanvas();
 
-        balls.forEach(ball => {
-            ball.render(this.ctx);
-            ball.changeDirectionOnCollision(balls)
+        objects.forEach(object => {
+            object.render(this.ctx);
+            object.changeDirectionOnCollision(object)
         })
 
-        requestAnimationFrame(() => this.render(balls));
+        // requestAnimationFrame(() => this.render(objects));
     }
 }
 
@@ -173,12 +227,12 @@ function createAndRenderBalls(
     const balls = [];
 
     for (let i = 0; i < numberOfBalls; i++) {
-        let ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
+        let ball = new Ant(null, null, radius, color, speed, xDirection, yDirection);
 
         if (i !== 0) {
             for (let j = 0; j < balls.length; j++) {
                 if ((balls[j].radius + ball.radius) >= calculateDistanceBetweenBalls(balls[j], ball)) {
-                    ball = new Ball(null, null, radius, color, speed, xDirection, yDirection);
+                    ball = new Ant(null, null, radius, color, speed, xDirection, yDirection);
                     j = -1;
                 }
             }
@@ -191,4 +245,4 @@ function createAndRenderBalls(
 }
 
 
-createAndRenderBalls();
+createAndRenderBalls(5);
